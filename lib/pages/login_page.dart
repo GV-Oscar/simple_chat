@@ -58,7 +58,7 @@ class __FormState extends State<_Form> {
         children: [
           CustomInput(
             icon: Icons.mail_outline,
-            placeholder: 'Usuario o correo electrónico',
+            placeholder: 'Correo electrónico',
             keyboardType: TextInputType.emailAddress,
             textController: emailCtrl,
             isShowInfo: true,

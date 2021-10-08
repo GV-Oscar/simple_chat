@@ -1,21 +1,37 @@
 import 'dart:convert';
 
-import 'package:chat/global/environment.dart';
-import 'package:chat/models/signin_response.dart';
-import 'package:chat/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AuthService with ChangeNotifier {
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'package:chat/global/environment.dart';
+import 'package:chat/models/signin_response.dart';
+import 'package:chat/models/usuario.dart';
+
+class AuthService with ChangeNotifier {
   Usuario? usuario;
   bool _isSignin = false;
+  // Create storage
+  final _storage = new FlutterSecureStorage();
 
   /// Comprueba si se esta realizando una petición para ingresar;
   bool get isSignin => this._isSignin;
   set isSignin(bool value) {
     this._isSignin = value;
     notifyListeners();
+  }
+
+  // Getters del token de forma estatica
+  static Future<String?> getToken() async {
+    final _storage = new FlutterSecureStorage();
+    final String? token = await _storage.read(key: 'token');
+    return token;
+  }
+
+  static Future<void> deleteToken() async {
+    final _storage = new FlutterSecureStorage();
+    return await _storage.delete(key: 'token');
   }
 
   /// Iniciar sesión
@@ -27,8 +43,7 @@ class AuthService with ChangeNotifier {
     final url = Uri.parse('${Environment.apiUrl}/auth/signin');
 
     final response = await http.post(url,
-    body: jsonEncode(data), 
-    headers: {'Content-Type': 'application/json'});
+        body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     print(response.body);
     this.isSignin = false;
@@ -37,11 +52,21 @@ class AuthService with ChangeNotifier {
       final signinResponse = signinResponseFromJson(response.body);
       this.usuario = signinResponse.usuario;
 
-      // TODO: Guardar token en lugar seguro.
-      
+      // Guardar token en lugar seguro.
+      await this._saveToken(signinResponse.token);
+
       return true;
     } else {
       return false;
     }
+  }
+
+  Future<void> _saveToken(String token) async {
+    return await this._storage.write(key: 'token', value: token);
+  }
+
+  /// Cerrar sesion de usuario.
+  Future<void> _signout() async {
+    return await this._storage.delete(key: 'token');
   }
 }

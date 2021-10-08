@@ -4,17 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 showAlert(BuildContext context, String titulo, String subtitulo) {
-  if (!Platform.isAndroid) {
+  if (Platform.isAndroid) {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(titulo),
         content: Text(subtitulo),
         actions: [
-          MaterialButton(
-            child: Text('Ok'),
-            elevation: 5,
-            color: Colors.blue,
+          TextButton(
+            child: Text('OK'),            
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -30,7 +28,7 @@ showAlert(BuildContext context, String titulo, String subtitulo) {
             actions: [
               CupertinoDialogAction(
                 isDefaultAction: true,
-                child: Text('Ok'),
+                child: Text('OK'),
                 onPressed: () => Navigator.pop(context),
               )
             ],

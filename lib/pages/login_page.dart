@@ -95,7 +95,10 @@ class __FormState extends State<_Form> {
                     final resultOK = await authService.signin(emailCtrl.text.trim(), passCtrl.text);
 
                     if(resultOK){
+                      // TODO: Conectar a nuestro socket server
+
                       // TODO: Navegar a otra pantalla
+                      Navigator.pushReplacementNamed(context, 'usuarios');
                     }else{
                       // Mostrar alerta
                       showAlert(context, 'Credenciales incorrectas', 'Revise su correo y contraseña nuevamente');

@@ -1,3 +1,4 @@
+import 'package:chat/helpers/show_alert.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/widgets/custom_submit_button.dart';
 import 'package:chat/widgets/labels.dart';
@@ -53,6 +54,8 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -82,14 +85,22 @@ class __FormState extends State<_Form> {
 
           CustomSubmitButton(
             text: 'Ingresar',
-            onPressed: () {
-              print('onPressed');
-              print(emailCtrl.text);
-              print(passCtrl.text);
+            onPressed: authService.isSignin
+                ? null
+                : () async {
+                    // Esconder teclado.
+                    FocusScope.of(context).unfocus();
+                    
+                    // Ejecutar servicio para iniciar sesion
+                    final resultOK = await authService.signin(emailCtrl.text.trim(), passCtrl.text);
 
-              final authService = Provider.of<AuthService>(context, listen: false);
-              authService.signin(emailCtrl.text, passCtrl.text);
-            },
+                    if(resultOK){
+                      // TODO: Navegar a otra pantalla
+                    }else{
+                      // Mostrar alerta
+                      showAlert(context, 'Credenciales incorrectas', 'Revise su correo y contraseña nuevamente');
+                    }
+                  },
           )
 
           // TODO: Crear boton

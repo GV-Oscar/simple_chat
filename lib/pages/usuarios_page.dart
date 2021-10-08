@@ -13,13 +13,12 @@ class _UsuariosPageState extends State<UsuariosPage> {
       RefreshController(initialRefresh: false);
 
   final usuarios = [
-    Usuario(online: true, email: 'test1@test.co', nombre: 'Oscar', uid: '1'),
-    Usuario(
-        online: false, email: 'test2@test.co', nombre: 'Angelica', uid: '2'),
-    Usuario(online: true, email: 'test3@test.co', nombre: 'Melissa', uid: '3'),
-    Usuario(online: true, email: 'test4@test.co', nombre: 'Lorena', uid: '4'),
-    Usuario(online: true, email: 'test5@test.co', nombre: 'Paula', uid: '5'),
-    Usuario(online: false, email: 'test6@test.co', nombre: 'Angie', uid: '6'),
+    Usuario(online: true,   phone: '+573188632311', email: 'test1@test.co', name: 'Oscar', uid: '1'),
+    Usuario(online: false,  phone: '+573188632312', email: 'test2@test.co', name: 'Angelica', uid: '2'),
+    Usuario(online: true,   phone: '+573188632313', email: 'test3@test.co', name: 'Melissa', uid: '3'),
+    Usuario(online: true,   phone: '+573188632314', email: 'test4@test.co', name: 'Lorena', uid: '4'),
+    Usuario(online: true,   phone: '+573188632315', email: 'test5@test.co', name: 'Paula', uid: '5'),
+    Usuario(online: false,  phone: '+573188632316', email: 'test6@test.co', name: 'Angie', uid: '6'),
   ];
 
   @override
@@ -65,10 +64,10 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   ListTile _usuarioListTile(Usuario usuario) {
     return ListTile(
-      title: Text(usuario.nombre),
+      title: Text(usuario.name),
       subtitle: Text(usuario.email),
       leading: CircleAvatar(
-        child: Text(usuario.nombre.substring(0, 2).toUpperCase()),
+        child: Text(usuario.name.substring(0, 2).toUpperCase()),
         backgroundColor: Colors.blue[100],
       ),
       trailing: Container(

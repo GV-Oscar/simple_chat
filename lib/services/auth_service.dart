@@ -10,44 +10,56 @@ import 'package:chat/models/signin_response.dart';
 import 'package:chat/models/usuario.dart';
 
 class AuthService with ChangeNotifier {
+  /// Usuario
   Usuario? usuario;
-  bool _isSignin = false;
+
+  /// Define si el usuario esta iniciando una peticion de autenticacion
+  bool _isAuthenticating = false;
+
   // Create storage
   final _storage = new FlutterSecureStorage();
 
   /// Comprueba si se esta realizando una petición para ingresar;
-  bool get isSignin => this._isSignin;
-  set isSignin(bool value) {
-    this._isSignin = value;
+  bool get isAuthenticating => this._isAuthenticating;
+
+  /// Establecer estado de peticion de autenticacion.
+  set isAuthenticating(bool value) {
+    this._isAuthenticating = value;
     notifyListeners();
   }
 
-  // Getters del token de forma estatica
+  /// Obtener token de usuario
   static Future<String?> getToken() async {
     final _storage = new FlutterSecureStorage();
     final String? token = await _storage.read(key: 'token');
     return token;
   }
 
+  /// Borrar token de usuario
   static Future<void> deleteToken() async {
     final _storage = new FlutterSecureStorage();
     return await _storage.delete(key: 'token');
   }
 
-  /// Iniciar sesión
+  /// Iniciar sesion.
   Future<bool> signin(String email, String password) async {
-    this.isSignin = true;
+    // Establecer inicio de peticion de ingreso
+    this.isAuthenticating = true;
 
-    final data = {'email': email, 'password': password};
+    final payload = {'email': email, 'password': password};
 
+    // Establecer punto final de la API de ingreso
     final url = Uri.parse('${Environment.apiUrl}/auth/signin');
-
+    // Realizar llamada al API.
     final response = await http.post(url,
-        body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
+        body: jsonEncode(payload),
+        headers: {'Content-Type': 'application/json'});
 
     print(response.body);
-    this.isSignin = false;
+    // Establecer fin de peticion de ingreso
+    this.isAuthenticating = false;
 
+    // Resultado exitoso
     if (response.statusCode == 200) {
       final signinResponse = signinResponseFromJson(response.body);
       this.usuario = signinResponse.usuario;
@@ -61,7 +73,46 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  Future<void> _saveToken(String token) async {
+  Future<dynamic> signup(
+      String name, String phone, String email, String password) async {
+    // Establecer inicio de peticion de registro
+    this.isAuthenticating = true;
+
+    final payload = {
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'password': password
+    };
+
+    // Establecer punto final de la API de registro
+    final url = Uri.parse('${Environment.apiUrl}/auth/signup');
+    // Realizar llamada al API de registro.
+    final response = await http.post(url,
+        body: jsonEncode(payload),
+        headers: {'Content-Type': 'application/json'});
+
+    print(response.body);
+    // Establecer fin de peticion de registro
+    this.isAuthenticating = false;
+
+    // Resultado exitoso
+    if (response.statusCode == 200) {
+      final signinResponse = signinResponseFromJson(response.body);
+      this.usuario = signinResponse.usuario;
+
+      // Guardar token en lugar seguro.
+      await this._saveToken(signinResponse.token);
+
+      return true;
+    } else {
+      final respBody = jsonDecode(response.body);
+      return respBody['msg'];
+    }
+  }
+
+  /// Guardar token en almacenamiento seguro.
+  Future<void> _saveToken(String? token) async {
     return await this._storage.write(key: 'token', value: token);
   }
 

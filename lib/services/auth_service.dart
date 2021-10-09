@@ -11,7 +11,14 @@ import 'package:chat/models/usuario.dart';
 
 class AuthService with ChangeNotifier {
   /// Usuario
-  Usuario? usuario;
+  Usuario? _usuario;
+
+  Usuario? get usuario => this._usuario;
+
+  set usuario(Usuario? usuario) {
+    this._usuario = usuario;
+    notifyListeners();
+  }
 
   /// Define si el usuario esta iniciando una peticion de autenticacion
   bool _isAuthenticating = false;
@@ -62,7 +69,7 @@ class AuthService with ChangeNotifier {
     // Resultado exitoso
     if (response.statusCode == 200) {
       final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario;
+      this.usuario = signinResponse.usuario!;
 
       // Guardar token en lugar seguro.
       await this._saveToken(signinResponse.token);
@@ -73,6 +80,7 @@ class AuthService with ChangeNotifier {
     }
   }
 
+  /// Registrar un nuevo usuario
   Future<dynamic> signup(
       String name, String phone, String email, String password) async {
     // Establecer inicio de peticion de registro
@@ -92,14 +100,13 @@ class AuthService with ChangeNotifier {
         body: jsonEncode(payload),
         headers: {'Content-Type': 'application/json'});
 
-    print(response.body);
     // Establecer fin de peticion de registro
     this.isAuthenticating = false;
 
     // Resultado exitoso
     if (response.statusCode == 200) {
       final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario;
+      this.usuario = signinResponse.usuario!;
 
       // Guardar token en lugar seguro.
       await this._saveToken(signinResponse.token);
@@ -132,12 +139,10 @@ class AuthService with ChangeNotifier {
     final response = await http.get(url,
         headers: {'Content-Type': 'application/json', 'x-token': '$token'});
 
-    print(response.body);
-
     // Resultado exitoso
     if (response.statusCode == 200) {
       final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario;
+      this.usuario = signinResponse.usuario!;
       // Guardar token en lugar seguro.
       await this._saveToken(signinResponse.token);
       return true;

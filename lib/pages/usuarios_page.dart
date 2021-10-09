@@ -1,4 +1,6 @@
+import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:chat/models/usuario.dart';
@@ -13,26 +15,63 @@ class _UsuariosPageState extends State<UsuariosPage> {
       RefreshController(initialRefresh: false);
 
   final usuarios = [
-    Usuario(online: true,   phone: '+573188632311', email: 'test1@test.co', name: 'Oscar', uid: '1'),
-    Usuario(online: false,  phone: '+573188632312', email: 'test2@test.co', name: 'Angelica', uid: '2'),
-    Usuario(online: true,   phone: '+573188632313', email: 'test3@test.co', name: 'Melissa', uid: '3'),
-    Usuario(online: true,   phone: '+573188632314', email: 'test4@test.co', name: 'Lorena', uid: '4'),
-    Usuario(online: true,   phone: '+573188632315', email: 'test5@test.co', name: 'Paula', uid: '5'),
-    Usuario(online: false,  phone: '+573188632316', email: 'test6@test.co', name: 'Angie', uid: '6'),
+    Usuario(
+        online: true,
+        phone: '+573188632311',
+        email: 'test1@test.co',
+        name: 'Oscar',
+        uid: '1'),
+    Usuario(
+        online: false,
+        phone: '+573188632312',
+        email: 'test2@test.co',
+        name: 'Angelica',
+        uid: '2'),
+    Usuario(
+        online: true,
+        phone: '+573188632313',
+        email: 'test3@test.co',
+        name: 'Melissa',
+        uid: '3'),
+    Usuario(
+        online: true,
+        phone: '+573188632314',
+        email: 'test4@test.co',
+        name: 'Lorena',
+        uid: '4'),
+    Usuario(
+        online: true,
+        phone: '+573188632315',
+        email: 'test5@test.co',
+        name: 'Paula',
+        uid: '5'),
+    Usuario(
+        online: false,
+        phone: '+573188632316',
+        email: 'test6@test.co',
+        name: 'Angie',
+        uid: '6'),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final user = authService.usuario;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Mi nombre',
+          '${user?.name}',
           style: TextStyle(color: Colors.black54),
         ),
         elevation: 1,
         backgroundColor: Colors.white,
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              // TODO: Desconectar el socket server
+              AuthService.deleteToken();
+              Navigator.pushReplacementNamed(context, 'login');
+            },
             icon: Icon(Icons.exit_to_app, color: Colors.black54)),
         actions: [
           Container(
@@ -47,7 +86,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
         enablePullDown: true,
         onRefresh: _cargarUsuarios,
         header: WaterDropHeader(
-            complete: Icon(Icons.check_circle_outline_outlined, color: Colors.blue[400]),
+            complete: Icon(Icons.check_circle_outline_outlined,
+                color: Colors.blue[400]),
             waterDropColor: Colors.blue),
         child: _usuariosListView(),
       ),

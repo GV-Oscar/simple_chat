@@ -117,7 +117,33 @@ class AuthService with ChangeNotifier {
   }
 
   /// Cerrar sesion de usuario.
-  Future<void> _signout() async {
+  Future<void> signout() async {
     return await this._storage.delete(key: 'token');
+  }
+
+  /// Comprobar si el usuario tiene un token valido
+  Future<bool> isSigned() async {
+    // Leer token
+    final token = await this._storage.read(key: 'token');
+    print(token);
+
+    // Establecer punto final de la API de renovar token
+    final url = Uri.parse('${Environment.apiUrl}/auth/renew');
+    final response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'x-token': '$token'});
+
+    print(response.body);
+
+    // Resultado exitoso
+    if (response.statusCode == 200) {
+      final signinResponse = signinResponseFromJson(response.body);
+      this.usuario = signinResponse.usuario;
+      // Guardar token en lugar seguro.
+      await this._saveToken(signinResponse.token);
+      return true;
+    } else {
+      this.signout();
+      return false;
+    }
   }
 }

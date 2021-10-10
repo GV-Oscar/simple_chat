@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chat">
+
+   <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
+        android:usesCleartextTraffic="true"
         android:label="chat"
         android:icon="@mipmap/ic_launcher">
         <activity

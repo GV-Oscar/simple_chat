@@ -62,7 +62,6 @@ class AuthService with ChangeNotifier {
         body: jsonEncode(payload),
         headers: {'Content-Type': 'application/json'});
 
-    print(response.body);
     // Establecer fin de peticion de ingreso
     this.isAuthenticating = false;
 
@@ -132,7 +131,6 @@ class AuthService with ChangeNotifier {
   Future<bool> isSigned() async {
     // Leer token
     final token = await this._storage.read(key: 'token');
-    print(token);
 
     // Establecer punto final de la API de renovar token
     final url = Uri.parse('${Environment.apiUrl}/auth/renew');

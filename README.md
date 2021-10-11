@@ -12,9 +12,9 @@ Aplicación de simple chat
 ## Acerca de
 
 Esta aplicación se desarrollo en Flutter y es compatible para IOS y Android.
-La aplicación requiere del respliegue del servidor: [Backend Simple Chat](https://github.com/GV-Oscar/simple_chat_backend)
+La aplicación requiere del despliegue de: [Backend Simple Chat](https://github.com/GV-Oscar/simple_chat_backend)
 
-La comunicación en tiempo real se logra gracias a traves de la comunicación por Sockets.
+La comunicación en tiempo real se logra gracias a la comunicación por Sockets.
 
 ## [powered by Oscar Giraldo](https://www.linkedin.com/in/gvoscar20/)
 

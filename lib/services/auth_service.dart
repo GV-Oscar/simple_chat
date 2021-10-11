@@ -11,11 +11,11 @@ import 'package:chat/models/usuario.dart';
 
 class AuthService with ChangeNotifier {
   /// Usuario
-  Usuario? _usuario;
+  late Usuario _usuario;
 
-  Usuario? get usuario => this._usuario;
+  Usuario get usuario => this._usuario;
 
-  set usuario(Usuario? usuario) {
+  set usuario(Usuario usuario) {
     this._usuario = usuario;
     notifyListeners();
   }

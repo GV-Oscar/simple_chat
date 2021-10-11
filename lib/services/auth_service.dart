@@ -50,31 +50,36 @@ class AuthService with ChangeNotifier {
 
   /// Iniciar sesion.
   Future<bool> signin(String email, String password) async {
-    // Establecer inicio de peticion de ingreso
-    this.isAuthenticating = true;
+    try {
+      // Establecer inicio de peticion de ingreso
+      this.isAuthenticating = true;
 
-    final payload = {'email': email, 'password': password};
+      final payload = {'email': email, 'password': password};
 
-    // Establecer punto final de la API de ingreso
-    final url = Uri.parse('${Environment.apiUrl}/auth/signin');
-    // Realizar llamada al API.
-    final response = await http.post(url,
-        body: jsonEncode(payload),
-        headers: {'Content-Type': 'application/json'});
+      // Establecer punto final de la API de ingreso
+      final url = Uri.parse('${Environment.apiUrl}/auth/signin');
+      // Realizar llamada al API.
+      final response = await http.post(url,
+          body: jsonEncode(payload),
+          headers: {'Content-Type': 'application/json'});
 
-    // Establecer fin de peticion de ingreso
-    this.isAuthenticating = false;
+      // Establecer fin de peticion de ingreso
+      this.isAuthenticating = false;
 
-    // Resultado exitoso
-    if (response.statusCode == 200) {
-      final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario!;
+      // Resultado exitoso
+      if (response.statusCode == 200) {
+        final signinResponse = signinResponseFromJson(response.body);
+        this.usuario = signinResponse.usuario!;
 
-      // Guardar token en lugar seguro.
-      await this._saveToken(signinResponse.token);
+        // Guardar token en lugar seguro.
+        await this._saveToken(signinResponse.token);
 
-      return true;
-    } else {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Ocurrio un error al ingresar: $e');
       return false;
     }
   }
@@ -82,38 +87,43 @@ class AuthService with ChangeNotifier {
   /// Registrar un nuevo usuario
   Future<dynamic> signup(
       String name, String phone, String email, String password) async {
-    // Establecer inicio de peticion de registro
-    this.isAuthenticating = true;
+    try {
+      // Establecer inicio de peticion de registro
+      this.isAuthenticating = true;
 
-    final payload = {
-      'name': name,
-      'phone': phone,
-      'email': email,
-      'password': password
-    };
+      final payload = {
+        'name': name,
+        'phone': phone,
+        'email': email,
+        'password': password
+      };
 
-    // Establecer punto final de la API de registro
-    final url = Uri.parse('${Environment.apiUrl}/auth/signup');
-    // Realizar llamada al API de registro.
-    final response = await http.post(url,
-        body: jsonEncode(payload),
-        headers: {'Content-Type': 'application/json'});
+      // Establecer punto final de la API de registro
+      final url = Uri.parse('${Environment.apiUrl}/auth/signup');
+      // Realizar llamada al API de registro.
+      final response = await http.post(url,
+          body: jsonEncode(payload),
+          headers: {'Content-Type': 'application/json'});
 
-    // Establecer fin de peticion de registro
-    this.isAuthenticating = false;
+      // Establecer fin de peticion de registro
+      this.isAuthenticating = false;
 
-    // Resultado exitoso
-    if (response.statusCode == 200) {
-      final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario!;
+      // Resultado exitoso
+      if (response.statusCode == 200) {
+        final signinResponse = signinResponseFromJson(response.body);
+        this.usuario = signinResponse.usuario!;
 
-      // Guardar token en lugar seguro.
-      await this._saveToken(signinResponse.token);
+        // Guardar token en lugar seguro.
+        await this._saveToken(signinResponse.token);
 
-      return true;
-    } else {
-      final respBody = jsonDecode(response.body);
-      return respBody['msg'];
+        return true;
+      } else {
+        final respBody = jsonDecode(response.body);
+        return respBody['msg'];
+      }
+    } catch (e) {
+      print('Ocurrio un error al registrar usuario: $e');
+      return 'Se perdio la conexión con el servidor';
     }
   }
 
@@ -129,23 +139,28 @@ class AuthService with ChangeNotifier {
 
   /// Comprobar si el usuario tiene un token valido
   Future<bool> isSigned() async {
-    // Leer token
-    final token = await this._storage.read(key: 'token');
+    try {
+      // Leer token
+      final token = await this._storage.read(key: 'token');
 
-    // Establecer punto final de la API de renovar token
-    final url = Uri.parse('${Environment.apiUrl}/auth/renew');
-    final response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'x-token': '$token'});
+      // Establecer punto final de la API de renovar token
+      final url = Uri.parse('${Environment.apiUrl}/auth/renew');
+      final response = await http.get(url,
+          headers: {'Content-Type': 'application/json', 'x-token': '$token'});
 
-    // Resultado exitoso
-    if (response.statusCode == 200) {
-      final signinResponse = signinResponseFromJson(response.body);
-      this.usuario = signinResponse.usuario!;
-      // Guardar token en lugar seguro.
-      await this._saveToken(signinResponse.token);
-      return true;
-    } else {
-      this.signout();
+      // Resultado exitoso
+      if (response.statusCode == 200) {
+        final signinResponse = signinResponseFromJson(response.body);
+        this.usuario = signinResponse.usuario!;
+        // Guardar token en lugar seguro.
+        await this._saveToken(signinResponse.token);
+        return true;
+      } else {
+        this.signout();
+        return false;
+      }
+    } catch (e) {
+      print('Ocurrio un error al comprobar token de usuario: $e');
       return false;
     }
   }

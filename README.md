@@ -1,16 +1,21 @@
-# chat
+# Simple Chat
 
-A new Flutter project.
+Aplicación de simple chat
 
-## Getting Started
+## Funcionalidades
+- Registro, Inicio de sesión
+- Envio de mensajes
 
-This project is a starting point for a Flutter application.
+<img src="https://firebasestorage.googleapis.com/v0/b/gvoscar-4686d.appspot.com/o/res%2FSimple-Chat.gif?alt=media&token=d44770e8-5db7-4ce8-965f-2bf988e2b8b5" width="540" height="690" />
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Acerca de
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Esta aplicación se desarrollo en Flutter y es compatible para IOS y Android.
+La aplicación requiere del respliegue del servidor: [Backend Simple Chat](https://github.com/GV-Oscar/simple_chat_backend)
+
+La comunicación en tiempo real se logra gracias a traves de la comunicación por Sockets.
+
+## [powered by Oscar Giraldo](https://www.linkedin.com/in/gvoscar20/)
+
+¿Tienes una idea de negocio, necesitas un PMV para validar tu Nicho y comprobar tu Tracción? Llegaste al lugar indicado. [Somos Pasili.com](https://www.pasili.com/) | Expertos en Soluciones Tecnológicas a tu Medida.
